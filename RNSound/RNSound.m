@@ -307,11 +307,16 @@ RCT_EXPORT_METHOD(getCurrentTime:(nonnull NSNumber*)key
 
 RCT_EXPORT_METHOD(setSpeakerPhone:(BOOL) on) {
     AVAudioSession *session = [AVAudioSession sharedInstance];
-    if (on) {
-        [session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
-    } else {
-        [session overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
-    }
+    #if TARGET_OS_TV
+      [session overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+    #else
+      if (on) {
+          [session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+      } else {
+          [session overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+      }
+    #endif
+
     [session setActive:true error:nil];
 }
 
